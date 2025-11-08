@@ -1,0 +1,44 @@
+{
+  "combos": [
+    {
+      "id": 1,
+      "name": "Комбо Пицца + Напиток",
+      "items": [1, 20],
+      "price": 3100,
+      "description": "Любая пицца и напиток по специальной цене.",
+      "image": "/images/combo_pizza_drink.jpg"
+    },
+    {
+      "id": 2,
+      "name": "Бургер Сет",
+      "items": [7, 10, 20],
+      "price": 3300,
+      "description": "Классический бургер, картофель фри и уола.",
+      "image": "/images/burger_set.jpg"
+    },
+    {
+      "id": 3,
+      "name": "Ланч Сет",
+      "items": [5, 16, 21],
+      "price": 3800,
+      "description": "Салат Цезарь, борщ и спрайт для сытного обеда.",
+      "image": "/images/lunch_combo.jpg"
+    },
+    {
+      "id": 4,
+      "name": "Паста + Кофе",
+      "items": [14, 23],
+      "price": 3300,
+      "description": "Паста Болоньезе и ароматный капучино.",
+      "image": "/images/pasta_coffee_combo.jpg"
+    },
+    {
+      "id": 5,
+      "name": "Десерт Дуэт",
+      "items": [17, 18, 24],
+      "price": 3200,
+      "description": "Тирамису, чизкейк и латте.",
+      "image": "/images/dessert_combo.jpg"
+    }
+  ]
+}

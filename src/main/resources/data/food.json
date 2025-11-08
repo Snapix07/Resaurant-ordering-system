@@ -1,0 +1,204 @@
+{
+  "food": [
+    {
+      "id": 1,
+      "name": "Маргарита",
+      "category": "Пицца",
+      "description": "Классическая пицца с томатным соусом, сыром моцарелла и базиликом.",
+      "price": 2500,
+      "image": "/images/margarita.jpg"
+    },
+    {
+      "id": 2,
+      "name": "Пепперони",
+      "category": "Пицца",
+      "description": "Пицца с колбасой пепперони и сыром моцарелла.",
+      "price": 2900,
+      "image": "/images/pepperoni.jpg"
+    },
+    {
+      "id": 3,
+      "name": "Гавайская",
+      "category": "Пицца",
+      "description": "Пицца с ветчиной, ананасами и сыром.",
+      "price": 3000,
+      "image": "/images/hawaiian.jpg"
+    },
+    {
+      "id": 4,
+      "name": "Четыре сыра",
+      "category": "Пицца",
+      "description": "Пицца с моцареллой, дорблю, пармезаном и гаудой.",
+      "price": 3200,
+      "image": "/images/four_cheese.jpg"
+    },
+    {
+      "id": 5,
+      "name": "Цезарь с курицей",
+      "category": "Салаты",
+      "description": "Салат с курицей, сухариками, пармезаном и соусом Цезарь.",
+      "price": 1800,
+      "image": "/images/caesar.jpg"
+    },
+    {
+      "id": 6,
+      "name": "Греческий салат",
+      "category": "Салаты",
+      "description": "Салат с фетой, оливками, огурцами и томатами.",
+      "price": 1700,
+      "image": "/images/greek_salad.jpg"
+    },
+    {
+      "id": 7,
+      "name": "Бургер Классический",
+      "category": "Бургеры",
+      "description": "Говяжья котлета, сыр, салат, соус и булочка с кунжутом.",
+      "price": 2400,
+      "image": "/images/classic_burger.jpg"
+    },
+    {
+      "id": 8,
+      "name": "Чизбургер",
+      "category": "Бургеры",
+      "description": "Бургер с говядиной, сыром чеддер и соусом барбекю.",
+      "price": 2500,
+      "image": "/images/cheeseburger.jpg"
+    },
+    {
+      "id": 9,
+      "name": "Бургер с курицей",
+      "category": "Бургеры",
+      "description": "Куриная котлета, салат, соус ранч и булочка.",
+      "price": 2300,
+      "image": "/images/chicken_burger.jpg"
+    },
+    {
+      "id": 10,
+      "name": "Картофель фри",
+      "category": "Закуски",
+      "description": "Хрустящий картофель фри с солью.",
+      "price": 1000,
+      "image": "/images/fries.jpg"
+    },
+    {
+      "id": 11,
+      "name": "Наггетсы",
+      "category": "Закуски",
+      "description": "Куриные наггетсы.",
+      "price": 1200,
+      "image": "/images/nuggets.jpg"
+    },
+    {
+      "id": 12,
+      "name": "Хот-дог",
+      "category": "Закуски",
+      "description": "Сосиска, горчица, кетчуп и маринованные огурцы.",
+      "price": 1600,
+      "image": "/images/hotdog.jpg"
+    },
+    {
+      "id": 13,
+      "name": "Паста Карбонара",
+      "category": "Паста",
+      "description": "Паста со сливочным соусом, беконом и пармезаном.",
+      "price": 2700,
+      "image": "/images/carbonara.jpg"
+    },
+    {
+      "id": 14,
+      "name": "Паста Болоньезе",
+      "category": "Паста",
+      "description": "Спагетти с соусом из говядины и томатов.",
+      "price": 2600,
+      "image": "/images/bolognese.jpg"
+    },
+    {
+      "id": 15,
+      "name": "Том Ям",
+      "category": "Супы",
+      "description": "Острый тайский суп с креветками и кокосовым молоком.",
+      "price": 2800,
+      "image": "/images/tom_yum.jpg"
+    },
+    {
+      "id": 16,
+      "name": "Борщ",
+      "category": "Супы",
+      "description": "Cуп с капустой, мясом и свеклой.",
+      "price": 2000,
+      "image": "/images/borscht.jpg"
+    },
+    {
+      "id": 17,
+      "name": "Тирамису",
+      "category": "Десерты",
+      "description": "Итальянский десерт с маскарпоне и кофе.",
+      "price": 1500,
+      "image": "/images/tiramisu.jpg"
+    },
+    {
+      "id": 18,
+      "name": "Чизкейк Нью-Йорк",
+      "category": "Десерты",
+      "description": "Нежный чизкейк с клубничным соусом.",
+      "price": 1600,
+      "image": "/images/cheesecake.jpg"
+    },
+    {
+      "id": 19,
+      "name": "Мороженое Ванильное",
+      "category": "Десерты",
+      "description": "Пломбир с натуральной ванилью.",
+      "price": 1200,
+      "image": "/images/icecream.jpg"
+    },
+    {
+      "id": 20,
+      "name": "Кола 0.5 л",
+      "category": "Напитки",
+      "description": "Классический газированный напиток.",
+      "price": 800,
+      "image": "/images/cola.jpg"
+    },
+    {
+      "id": 21,
+      "name": "Спрайт 0.5 л",
+      "category": "Напитки",
+      "description": "Газированный лимонно-лаймовый напиток.",
+      "price": 800,
+      "image": "/images/sprite.jpg"
+    },
+    {
+      "id": 22,
+      "name": "Сок апельсиновый 0.5 л",
+      "category": "Напитки",
+      "description": "Натуральный апельсиновый сок",
+      "price": 900,
+      "image": "/images/orange_juice.jpg"
+    },
+    {
+      "id": 23,
+      "name": "Капучино",
+      "category": "Кофе",
+      "description": "Классический капучино с плотной молочной пенкой.",
+      "price": 1100,
+      "image": "/images/cappuccino.jpg"
+    },
+    {
+      "id": 24,
+      "name": "Латте",
+      "category": "Кофе",
+      "description": "Нежный кофе латте с молочной пенкой и лёгким вкусом.",
+      "price": 1000,
+      "image": "/images/latte.jpg"
+    },
+    {
+      "id": 25,
+      "name": "Американо",
+      "category": "Кофе",
+      "description": "Крепкий черный кофе, приготовленный на основе эспрессо.",
+      "price": 1100,
+      "image": "/images/americano.jpg"
+    }
+  ]
+}
