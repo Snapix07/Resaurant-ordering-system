@@ -1,6 +1,9 @@
 package com.nurasyl.restaraunt.decorator.concrete;
 
 
+import com.nurasyl.restaraunt.types.MenuItem;
+import com.nurasyl.restaraunt.types.MenuItemDecorator;
+
 public class ExtraCheese extends MenuItemDecorator {
 
     public ExtraCheese(MenuItem decoratedMenuItem) {
