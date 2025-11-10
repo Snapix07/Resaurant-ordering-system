@@ -1,9 +1,5 @@
 package com.nurasyl.restaraunt.factory.order;
 
-import com.nurasyl.restaraunt.model.delivery.Delivery;
-import com.nurasyl.restaraunt.model.delivery.DineIn;
-import com.nurasyl.restaraunt.model.delivery.Takeaway;
-import com.nurasyl.restaraunt.types.OrderType;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -1,7 +1,5 @@
 package com.nurasyl.restaraunt.decorator.concrete;
 
-import com.nurasyl.restaraunt.types.MenuItemDecorator;
-import com.nurasyl.restaraunt.types.MenuItem;
 
 public class ExtraTopping extends MenuItemDecorator {
     private String topping;

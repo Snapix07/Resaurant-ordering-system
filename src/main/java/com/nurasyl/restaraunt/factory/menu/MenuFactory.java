@@ -1,7 +1,6 @@
 package com.nurasyl.restaraunt.factory.menu;
 
 import com.nurasyl.restaraunt.model.menu.food.*;
-import com.nurasyl.restaraunt.types.MenuItem;
 import org.springframework.stereotype.Component;
 
 @Component
