@@ -16,11 +16,13 @@ public class StripeService {
     @Value("${stripe.secretKey}")
     private String apiKey;
 
-    public StripeResponse checkoutProducts(List<ProductRequest> productRequest) {
+    public StripeResponse checkoutProducts(List<ProductRequest> products, long strategyPrice) {
         Stripe.apiKey = apiKey;
         List<SessionCreateParams.LineItem> lineItems = new ArrayList<>();
 
-        for (ProductRequest product : productRequest) {
+        for (ProductRequest product : products) {
+            long finalAmount = (product.getAmount() + strategyPrice) * product.getQuantity() * 100;
+
             SessionCreateParams.LineItem.PriceData.ProductData productData =
                     SessionCreateParams.LineItem.PriceData.ProductData.builder()
                             .setName(product.getName())
@@ -28,15 +30,15 @@ public class StripeService {
 
             SessionCreateParams.LineItem.PriceData priceData =
                     SessionCreateParams.LineItem.PriceData.builder()
-                            .setCurrency(product.getCurrency())
-                            .setUnitAmount(product.getAmount())
+                            .setCurrency("KZT")
+                            .setUnitAmount(finalAmount)
                             .setProductData(productData)
                             .build();
 
             SessionCreateParams.LineItem lineItem =
                     SessionCreateParams.LineItem.builder()
                             .setPriceData(priceData)
-                            .setQuantity(product.getQuantity())
+                            .setQuantity(1L)
                             .build();
 
             lineItems.add(lineItem);
@@ -47,7 +49,13 @@ public class StripeService {
                 .setSuccessUrl("http://localhost:8080/success")
                 .setCancelUrl("http://localhost:8080/cancel")
                 .addAllLineItem(lineItems)
+                .setShippingAddressCollection(
+                        SessionCreateParams.ShippingAddressCollection.builder()
+                                .addAllowedCountry(SessionCreateParams.ShippingAddressCollection.AllowedCountry.KZ)
+                                .build()
+                )
                 .build();
+
 
 
         Session session = null;
