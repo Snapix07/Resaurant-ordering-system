@@ -6,7 +6,7 @@
       "category": "Pizza",
       "description": "Classic pizza with tomato sauce, mozzarella cheese, and basil.",
       "price": 2500,
-      "image": "src/main/java/data/images/margarita.jpg"
+      "image": "data/images/margarita.jpg"
     },
     {
       "id": 2,
@@ -14,7 +14,7 @@
       "category": "Pizza",
       "description": "Pizza with pepperoni sausage and mozzarella cheese.",
       "price": 2900,
-      "image": "src/main/java/data/images/pepperoni.jpg"
+      "image": "data/images/pepperoni.jpg"
     },
     {
       "id": 3,
@@ -22,7 +22,7 @@
       "category": "Pizza",
       "description": "Pizza with ham, pineapple, and cheese.",
       "price": 3000,
-      "image": "src/main/java/data/images/hawaiian.jpg"
+      "image": "data/images/hawaiian.jpg"
     },
     {
       "id": 4,
@@ -30,7 +30,7 @@
       "category": "Pizza",
       "description": "Pizza with mozzarella, dorblu, parmesan, and gouda.",
       "price": 3200,
-      "image": "src/main/java/data/images/four_cheese.jpg"
+      "image": "data/images/four_cheese.jpg"
     },
     {
       "id": 5,
@@ -38,7 +38,7 @@
       "category": "Salads",
       "description": "Salad with chicken, croutons, parmesan, and Caesar dressing.",
       "price": 1800,
-      "image": "src/main/java/data/images/caesar.jpg"
+      "image": "data/images/caesar.jpg"
     },
     {
       "id": 6,
@@ -46,7 +46,7 @@
       "category": "Salads",
       "description": "Salad with feta cheese, olives, cucumbers, and tomatoes.",
       "price": 1700,
-      "image": "src/main/java/data/images/greek_salad.jpg"
+      "image": "data/images/greek_salad.jpg"
     },
     {
       "id": 7,
@@ -54,7 +54,7 @@
       "category": "Burgers",
       "description": "Beef patty, cheese, lettuce, sauce, and sesame bun.",
       "price": 2400,
-      "image": "src/main/java/data/images/classic_burger.jpg"
+      "image": "data/images/classic_burger.jpg"
     },
     {
       "id": 8,
@@ -62,7 +62,7 @@
       "category": "Burgers",
       "description": "Burger with beef, cheddar cheese, and BBQ sauce.",
       "price": 2500,
-      "image": "src/main/java/data/images/cheeseburger.jpg"
+      "image": "data/images/cheeseburger.jpg"
     },
     {
       "id": 9,
@@ -70,7 +70,7 @@
       "category": "Burgers",
       "description": "Chicken patty, lettuce, ranch sauce, and bun.",
       "price": 2300,
-      "image": "src/main/java/data/images/chicken_burger.jpg"
+      "image": "data/images/chicken_burger.jpg"
     },
     {
       "id": 10,
@@ -78,7 +78,7 @@
       "category": "Snacks",
       "description": "Crispy salted french fries.",
       "price": 1000,
-      "image": "src/main/java/data/images/fries.jpg"
+      "image": "data/images/fries.jpg"
     },
     {
       "id": 11,
@@ -86,7 +86,7 @@
       "category": "Snacks",
       "description": "Crispy chicken nuggets.",
       "price": 1200,
-      "image": "src/main/java/data/images/nuggets.jpg"
+      "image": "data/images/nuggets.jpg"
     },
     {
       "id": 12,
@@ -94,7 +94,7 @@
       "category": "Snacks",
       "description": "Sausage, mustard, ketchup, and pickles.",
       "price": 1600,
-      "image": "src/main/java/data/images/hotdog.jpg"
+      "image": "data/images/hotdog.jpg"
     },
     {
       "id": 13,
@@ -102,7 +102,7 @@
       "category": "Pasta",
       "description": "Pasta with creamy sauce, bacon, and parmesan.",
       "price": 2700,
-      "image": "src/main/java/data/images/carbonara.jpg"
+      "image": "data/images/carbonara.jpg"
     },
     {
       "id": 14,
@@ -110,7 +110,7 @@
       "category": "Pasta",
       "description": "Spaghetti with beef and tomato sauce.",
       "price": 2600,
-      "image": "src/main/java/data/images/bolognese.jpg"
+      "image": "data/images/bolognese.jpg"
     },
     {
       "id": 15,
@@ -118,7 +118,7 @@
       "category": "Soups",
       "description": "Spicy Thai soup with shrimp and coconut milk.",
       "price": 2800,
-      "image": "src/main/java/data/images/tom_yum.jpg"
+      "image": "data/images/tom_yum.jpg"
     },
     {
       "id": 16,
@@ -126,7 +126,7 @@
       "category": "Soups",
       "description": "Soup with cabbage, meat, and beets.",
       "price": 2000,
-      "image": "src/main/java/data/images/borscht.jpg"
+      "image": "data/images/borscht.jpg"
     },
     {
       "id": 17,
@@ -134,7 +134,7 @@
       "category": "Desserts",
       "description": "Italian dessert with mascarpone and coffee.",
       "price": 1500,
-      "image": "src/main/java/data/images/tiramisu.jpg"
+      "image": "data/images/tiramisu.jpg"
     },
     {
       "id": 18,
@@ -142,7 +142,7 @@
       "category": "Desserts",
       "description": "Delicate cheesecake with strawberry sauce.",
       "price": 1600,
-      "image": "src/main/java/data/images/cheesecake.jpg"
+      "image": "data/images/cheesecake.jpg"
     },
     {
       "id": 19,
@@ -150,7 +150,7 @@
       "category": "Desserts",
       "description": "Creamy ice cream with natural vanilla.",
       "price": 1200,
-      "image": "src/main/java/data/images/icecream.jpg"
+      "image": "data/images/icecream.jpg"
     },
     {
       "id": 20,
@@ -158,7 +158,7 @@
       "category": "Drinks",
       "description": "Classic carbonated drink.",
       "price": 800,
-      "image": "src/main/java/data/images/cola.jpg"
+      "image": "data/images/cola.jpg"
     },
     {
       "id": 21,
@@ -166,7 +166,7 @@
       "category": "Drinks",
       "description": "Carbonated lemon-lime drink.",
       "price": 800,
-      "image": "src/main/java/data/images/sprite.jpg"
+      "image": "data/images/sprite.jpg"
     },
     {
       "id": 22,
@@ -174,7 +174,7 @@
       "category": "Drinks",
       "description": "Natural orange juice.",
       "price": 900,
-      "image": "src/main/java/data/images/orange_juice.jpg"
+      "image": "data/images/orange_juice.jpg"
     },
     {
       "id": 23,
@@ -182,7 +182,7 @@
       "category": "Coffee",
       "description": "Classic cappuccino with thick milk foam.",
       "price": 1100,
-      "image": "src/main/java/data/images/cappuccino.jpg"
+      "image": "data/images/cappuccino.jpg"
     },
     {
       "id": 24,
@@ -190,7 +190,7 @@
       "category": "Coffee",
       "description": "Smooth latte coffee with milk foam and a mild flavor.",
       "price": 1000,
-      "image": "src/main/java/data/images/latte.jpg"
+      "image": "data/images/latte.jpg"
     },
     {
       "id": 25,
@@ -198,7 +198,7 @@
       "category": "Coffee",
       "description": "Strong black coffee made from espresso.",
       "price": 1100,
-      "image": "src/main/java/data/images/americano.jpg"
+      "image": "data/images/americano.jpg"
     }
   ]
 }

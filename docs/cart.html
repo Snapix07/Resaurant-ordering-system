@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cart</title>
+  <link rel="stylesheet" href="style/cart-style.css">
+</head>
+<body>
+  <header>
+    <h1 class="title">Your Cart</h1>
+    <a href="index.html">Back</a>
+  </header>
+
+  <div id="cart-container" class="cart-container"></div>
+
+  <div class="cart-summary">
+    <p>Total: <span id="total-price">0</span> ₸</p>
+    <select id="delivery-type">
+      <option value="TakeAway">Takeaway</option>
+      <option value="DineIn">DineIn</option>
+      <option value="Delivery">Delivery</option>
+    </select>
+    <button id="checkout-btn">Checkout</button>
+  </div>
+  <div id="toaster" class="toaster"></div>
+  <script src="scripts/cart.js"></script>
+</body>
+</html>
