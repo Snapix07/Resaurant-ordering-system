@@ -206,3 +206,11 @@ body {
         font-size: 12px;
     }
 }
+#popup-img {
+    max-width: 90%;
+    max-height: 300px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+    border-radius: 10px;
+}

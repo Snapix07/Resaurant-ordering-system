@@ -6,10 +6,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const toaster = document.getElementById("toaster");
 
     let cart = [];
+    let foods = [];
+    let combos = [];
+
+    Promise.all([
+        fetch('data/food.json').then(res => res.json()),
+        fetch('data/combos.json').then(res => res.json())
+    ]).then(([foodData, comboData]) => {
+        foods = foodData.food || [];
+        combos = comboData.combos || [];
+        fetchCart();
+    });
+
 
     async function fetchCart() {
         try {
-            const res = await fetch("/cart");
+            const res = await fetch("http://localhost:8080/cart");
+            if (!res.ok) throw new Error("Failed to load cart");
             cart = await res.json();
             displayCart();
         } catch (error) {
@@ -23,74 +36,72 @@ document.addEventListener("DOMContentLoaded", () => {
 
         cart.forEach((item, index) => {
             total += item.price * (item.quantity || 1);
+
+
+            let product = foods.find(f => f.id === item.foodId) || combos.find(c => c.id === item.foodId);
+
+            const itemName = product ? product.name : "Unnamed Product";
+            const itemImage = product ? product.image : "placeholder.png";
+
             const cartItem = document.createElement("div");
             cartItem.classList.add("cart-item");
-
             cartItem.innerHTML = `
-                <img src="${item.image}" alt="${item.name}">
-                <div class="cart-item-details">
-                    <h3>${item.name}</h3>
-                    <p>${item.price} ₸</p>
-                </div>
-                <button data-index="${index}">Remove</button>
-                `;
+            <img src="${itemImage}" alt="${itemName}">
+            <div class="cart-item-details">
+                <h3>${itemName}</h3>
+                <p>${item.price} ₸</p>
+            </div>
+            <button data-index="${index}">Remove</button>
+        `;
 
-            const removeBtn = cartItem.querySelector("button");
-            removeBtn.addEventListener("click", async () => {
-                await fetch("/cart/remove", {
+            cartItem.querySelector("button").addEventListener("click", async () => {
+                await fetch("http://localhost:8080/cart/remove", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(item)
                 });
+                showToaster(`${itemName} removed`);
                 await fetchCart();
-                showToaster(`${item.name || "Item"} removed from cart`)
             });
+
             cartContainer.appendChild(cartItem);
         });
 
         totalPrice.textContent = total;
-
     }
 
-    function showToaster(message) {
-        toaster.textContent = message;
-        toaster.classList.add('show');
-
-        setTimeout(() => {
-            toaster.classList.remove('show');
-        }, 3000);
-    }
 
     checkoutButton.addEventListener("click", async () => {
-        if (cart.length === 0) {
-            showToaster("Your cart is empty!");
-            return;
-        }
-        const deliveryType = deliverySelect.value;
+        if (cart.length === 0) return showToaster("Your cart is empty!");
 
+        const deliveryType = deliverySelect.value;
         const cartItems = cart.map(item => ({
-                id: item.foodId,
-                name: item.name,
-                amount: item.price,
-                quantity: item.quantity
+            id: item.foodId,
+            name: item.name || "Unnamed Product",
+            amount: item.price ,
+            quantity: item.quantity || 1,
+            currency: "KZT",
         }));
 
         try {
-            const res = await fetch(`/orders/checkout?deliveryType=${deliveryType}`, {
+            const res = await fetch(`http://localhost:8080/orders/checkout?deliveryType=${deliveryType}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(cartItems)
             });
             const data = await res.json();
-            if (data.sessionUrl){
-                window.location.href = data.sessionUrl;
-            } else {
-                showToaster("Failed to create payment session");
-            }
+            if (data.sessionUrl) window.location.href = data.sessionUrl;
+            else showToaster("Payment session failed");
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     });
+
+    function showToaster(message) {
+        toaster.textContent = message;
+        toaster.classList.add('show');
+        setTimeout(() => toaster.classList.remove('show'), 3000);
+    }
 
     fetchCart();
 });

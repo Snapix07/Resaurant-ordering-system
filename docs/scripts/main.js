@@ -15,29 +15,23 @@ document.addEventListener("DOMContentLoaded", () => {
     let combos = [];
     let cart = [];
 
-    fetch('data/food.json')
-        .then(res => res.json())
-        .then(data => {
-            foods = data.food;
+    // Загружаем меню
+    Promise.all([
+        fetch('data/food.json').then(res => res.json()),
+        fetch('data/combos.json').then(res => res.json())
+    ])
+        .then(([foodData, comboData]) => {
+            foods = foodData.food || [];
+            combos = comboData.combos || [];
             displayMenu('all');
+            updateCart();
         })
         .catch(err => console.log(err));
-
-    fetch('data/combos.json')
-        .then(res => res.json())
-        .then(data => {
-            combos = data.combos;
-            displayMenu('all');
-        })
-        .catch(err => console.log(err));
-
 
     async function updateCart() {
         try {
-            const res = await fetch('/cart');
-            if (!res.ok){
-                throw new Error('Failed to fetch cart.');
-            }
+            const res = await fetch('http://localhost:8080/cart');
+            if (!res.ok) throw new Error('Failed to fetch cart');
             cart = await res.json();
             updateCartCount();
         } catch (error) {
@@ -47,45 +41,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function displayMenu(filterCategory = 'all') {
         menuContainer.innerHTML = '';
-        const displayedFoods = filterCategory === 'all' ? foods : foods.filter(food => food.category === filterCategory);
 
-        displayedFoods.forEach(food => {
-            menuContainer.appendChild(createCard(food.name, food.description, food.price, food.image));
-        });
+        const filteredFoods = filterCategory === 'all'
+            ? foods
+            : foods.filter(f => f.category === filterCategory);
+        const filteredCombos = filterCategory === 'all'
+            ? combos
+            : combos.filter(c => c.category === filterCategory);
 
-        const displayedCombos = filterCategory === 'all' ? combos : combos.filter(combo => combo.category === filterCategory);
-        displayedCombos.forEach(combo => {
-            const card = createCard(combo.name, combo.description, combo.price, combo.image);
+        [...filteredFoods, ...filteredCombos].forEach(item => {
+            const card = createCard(item);
             menuContainer.appendChild(card);
         });
     }
 
-    function createCard(name, description, price, image) {
+    function createCard(item) {
         const card = document.createElement('div');
         card.classList.add('card');
         card.innerHTML = `
             <div class="img-container">
-            <img src="${image}" alt="${name}">
+                <img src="${item.image}" alt="${item.name}">
             </div>
-            <div class ="card-body">
-                <div class="card-title">${name}</div>
-                <div class="card-description">${description}</div>
-                <div class="card-price">${price}</div>
-            </div>`;
-
-        card.addEventListener('click', () => {
-            showPopup({name, description, price, image});
-        });
+            <div class="card-body">
+                <div class="card-title">${item.name}</div>
+                <div class="card-description">${item.description}</div>
+                <div class="card-price">${item.price} ₸</div>
+            </div>
+        `;
+        card.addEventListener('click', () => showPopup(item));
         return card;
     }
 
     function showPopup(item) {
-        popupImg.onload = () => {
-            popupImg.style.maxWidth = "92%";
-            popupImg.style.height = "auto";
-            popupImg.style.display = "block";
-            popupImg.style.margin = "0 auto";
-        };
         popupImg.src = item.image;
         popupName.textContent = item.name;
         popupDescription.textContent = item.description;
@@ -94,13 +81,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
         addToCartBtn.onclick = async () => {
             try {
-                const response = await fetch('/cart/add', {
+                const response = await fetch('http://localhost:8080/cart/add', {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        foodId: item.id,
+                        foodId: item.id || Date.now(), // безопасно, если нет id
+                        name: item.name,
+                        price: item.price,
                         quantity: 1,
-                        price: item.price
+                        image: item.image
                     })
                 });
 
@@ -108,10 +97,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     showToaster(`${item.name} added to cart`);
                     await updateCart();
                 } else {
-                    showToaster('Failed to add item to cart.');
+                    showToaster('Failed to add item to cart');
                 }
-            }catch(error) {
-                console.log(error);
+            } catch (error) {
+                console.error(error);
             }
             popup.style.display = 'none';
         };
@@ -119,17 +108,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     closePopup.onclick = () => {
         popup.style.display = 'none';
-    }
+    };
 
     function showToaster(message) {
         toaster.textContent = message;
         toaster.classList.add('show');
-
-        setTimeout(() => {
-            toaster.classList.remove('show');
-        }, 3000)
+        setTimeout(() => toaster.classList.remove('show'), 3000);
     }
-
 
     buttons.forEach(btn => {
         btn.addEventListener('click', () => {

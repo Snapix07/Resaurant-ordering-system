@@ -16,26 +16,25 @@ public class CartService {
     @Setter
     private DeliveryStrategy deliveryStrategy;
 
-
     public void addItem(CartItem item) {
         for (CartItem i : items) {
-            if (i.getFoodId().equals(item.getFoodId())) {
+            if (i.getFoodId() != null && i.getFoodId().equals(item.getFoodId())) {
                 i.setQuantity(i.getQuantity() + item.getQuantity());
                 return;
             }
         }
         items.add(item);
     }
+
     public void removeItem(CartItem item) {
         items.removeIf(i -> {
-            if (i.getFoodId().equals(item.getFoodId())) {
+            if (i.getFoodId() != null && i.getFoodId().equals(item.getFoodId())) {
                 i.setQuantity(i.getQuantity() - item.getQuantity());
                 return i.getQuantity() <= 0;
             }
             return false;
         });
     }
-
 
     public void clear() {
         items.clear();
@@ -51,5 +50,4 @@ public class CartService {
         }
         return sum;
     }
-
 }

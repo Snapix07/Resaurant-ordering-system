@@ -21,8 +21,9 @@ public class StripeService {
         List<SessionCreateParams.LineItem> lineItems = new ArrayList<>();
 
         for (ProductRequest product : products) {
-            long finalAmount = (product.getAmount() + strategyPrice) * product.getQuantity() * 100;
-
+            if (product.getName() == null || product.getAmount() == null || product.getQuantity() == null) {
+                throw new IllegalArgumentException("Invalid product data: " + product);
+            }
             SessionCreateParams.LineItem.PriceData.ProductData productData =
                     SessionCreateParams.LineItem.PriceData.ProductData.builder()
                             .setName(product.getName())
@@ -31,18 +32,42 @@ public class StripeService {
             SessionCreateParams.LineItem.PriceData priceData =
                     SessionCreateParams.LineItem.PriceData.builder()
                             .setCurrency("KZT")
-                            .setUnitAmount(finalAmount)
+                            .setUnitAmount(product.getAmount() * 100) // без доставки
                             .setProductData(productData)
                             .build();
 
             SessionCreateParams.LineItem lineItem =
                     SessionCreateParams.LineItem.builder()
                             .setPriceData(priceData)
-                            .setQuantity(1L)
+                            .setQuantity((long) product.getQuantity())
                             .build();
 
             lineItems.add(lineItem);
         }
+
+
+        if (strategyPrice > 0) {
+            SessionCreateParams.LineItem.PriceData.ProductData deliveryData =
+                    SessionCreateParams.LineItem.PriceData.ProductData.builder()
+                            .setName("Delivery")
+                            .build();
+
+            SessionCreateParams.LineItem.PriceData deliveryPriceData =
+                    SessionCreateParams.LineItem.PriceData.builder()
+                            .setCurrency("KZT")
+                            .setUnitAmount(strategyPrice * 100)
+                            .setProductData(deliveryData)
+                            .build();
+
+            SessionCreateParams.LineItem deliveryLineItem =
+                    SessionCreateParams.LineItem.builder()
+                            .setPriceData(deliveryPriceData)
+                            .setQuantity(1L)
+                            .build();
+
+            lineItems.add(deliveryLineItem);
+        }
+
 
         SessionCreateParams params = SessionCreateParams.builder()
                 .setMode(SessionCreateParams.Mode.PAYMENT)
@@ -56,19 +81,16 @@ public class StripeService {
                 )
                 .build();
 
-
-
-        Session session = null;
-        try{
-            session = Session.create(params);
+        try {
+            Session session = Session.create(params);
+            return StripeResponse.builder()
+                    .status("Success")
+                    .message("Payment session created successfully")
+                    .sessionId(session.getId())
+                    .sessionUrl(session.getUrl())
+                    .build();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Stripe session creation failed", e);
         }
-        return StripeResponse.builder()
-                .status("Success")
-                .message("Payment section created successfully")
-                .sessionId(session.getId())
-                .sessionUrl(session.getUrl())
-                .build();
     }
 }
