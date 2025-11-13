@@ -3,34 +3,38 @@
     {
       "id": 1,
       "name": "Pizza + Drink Combo",
+      "category": "Combo",
       "items": [1, 20],
       "price": 3100,
       "description": "Margherita pizza and cola at a special price.",
-      "image": "src/main/java/data/images/combo_pizza_drink.jpg"
+      "image": "data/images/combo_pizza_drink.jpg"
     },
     {
       "id": 2,
       "name": "Burger Set",
+      "category": "Combo",
       "items": [7, 10, 20],
       "price": 3300,
       "description": "Classic burger, french fries, and cola.",
-      "image": "src/main/java/data/images/burger_set.jpg"
+      "image": "data/images/burger_set.jpg"
     },
     {
       "id": 3,
       "name": "Lunch Set",
+      "category": "Combo",
       "items": [6, 14, 25],
       "price": 4300,
       "description": "Greek Salad, pasta Bolognese, and aromatic Americano.",
-      "image": "src/main/java/data/images/lunch_combo.jpg"
+      "image": "data/images/lunch_combo.jpg"
     },
     {
       "id": 4,
       "name": "Dessert Combo",
+      "category": "Combo",
       "items": [17, 23],
       "price": 2000,
       "description": "Tiramisu and cappuccino.",
-      "image": "src/main/java/data/images/dessert_combo.jpg"
+      "image": "data/images/dessert_combo.jpg"
     }
   ]
 }
