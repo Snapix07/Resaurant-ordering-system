@@ -8,7 +8,9 @@
 <body>
     <header>
         <h1 class ="title">Restaurant menu</h1>
-        <button id="cart-button">Cart (<span id="cart-count">0</span>)</button>
+        <a href="cart.html">
+            <button id="cart-button">Cart (<span id="cart-count">0</span>)</button>
+        </a>
     </header>
 
     <div class="filter">
@@ -37,7 +39,12 @@
                 <h2 id="popup-name"></h2>
                 <p id="popup-description"></p>
                 <p id="popup-price"></p>
-                <button id="add-to-cart">Add to cart</button>
+
+                <div id="toppings-list" class="toppings-list"></div>
+
+                <div class="popup-actions">
+                    <button id="add-to-cart">Add to cart</button>
+                </div>
             </div>
         </div>
     </div>

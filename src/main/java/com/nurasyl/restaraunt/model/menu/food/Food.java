@@ -1,4 +1,4 @@
-package com.nurasyl.restaraunt.types;
+package com.nurasyl.restaraunt.model.menu.food;
 
 import lombok.Data;
 

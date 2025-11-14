@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let foods = [];
     let combos = [];
+    let toppings = [];
     let cart = [];
 
     // Загружаем меню
@@ -26,6 +27,12 @@ document.addEventListener("DOMContentLoaded", () => {
             displayMenu('all');
             updateCart();
         })
+        .catch(err => console.log(err));
+
+    // Загружаем топпинги
+    fetch('data/toppings.json')
+        .then(res => res.json())
+        .then(data => { toppings = data.toppings || []; })
         .catch(err => console.log(err));
 
     async function updateCart() {
@@ -42,11 +49,9 @@ document.addEventListener("DOMContentLoaded", () => {
     function displayMenu(filterCategory = 'all') {
         menuContainer.innerHTML = '';
 
-        const filteredFoods = filterCategory === 'all'
-            ? foods
+        const filteredFoods = filterCategory === 'all' ? foods
             : foods.filter(f => f.category === filterCategory);
-        const filteredCombos = filterCategory === 'all'
-            ? combos
+        const filteredCombos = filterCategory === 'all' ? combos
             : combos.filter(c => c.category === filterCategory);
 
         [...filteredFoods, ...filteredCombos].forEach(item => {
@@ -73,24 +78,34 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function showPopup(item) {
+        currentPopupItem = item;
+        selectedToppings = new Set();
         popupImg.src = item.image;
         popupName.textContent = item.name;
         popupDescription.textContent = item.description;
         popupPrice.textContent = `${item.price} ₸`;
+
+        toppingsForCategory(item.category || '');
+
         popup.style.display = 'flex';
 
         addToCartBtn.onclick = async () => {
+            const chosenToppings = toppings.filter(t => selectedToppings.has(t.id));
+            const totalPrice = item.price + chosenToppings.reduce((sum, t) => sum + t.price, 0);
+
+            const payload = {
+                foodId: item.id || Date.now(),
+                name: item.name,
+                price: totalPrice,
+                quantity: 1,
+                image: item.image,
+                toppings: chosenToppings.map(t => ({ id: t.id, name: t.name, price: t.price }))
+            };
             try {
                 const response = await fetch('http://localhost:8080/cart/add', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        foodId: item.id || Date.now(), // безопасно, если нет id
-                        name: item.name,
-                        price: item.price,
-                        quantity: 1,
-                        image: item.image
-                    })
+                    body: JSON.stringify(payload)
                 });
 
                 if (response.ok) {
@@ -104,6 +119,58 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             popup.style.display = 'none';
         };
+    }
+
+    let selectedToppings = new Set();
+    let currentPopupItem = null;
+
+    function toppingsForCategory(category) {
+        const list = document.getElementById('toppings-list');
+        list.innerHTML = '';
+
+        const available = toppings.filter(t => t.category === category);
+        if (available.length === 0) {
+            list.textContent = 'No Toppings';
+            return;
+        }
+
+        available.forEach(topping => {
+            const wrap = document.createElement('div');
+            wrap.className = 'topping';
+
+            const input = document.createElement('input');
+            input.type = 'checkbox';
+            input.id = 'topping-' + topping.id;
+            input.dataset.toppingid = topping.id;
+
+            input.checked = selectedToppings.has(topping.id);
+
+            const label = document.createElement('label');
+            label.htmlFor = input.id;
+            label.textContent = `${topping.name} (${topping.price} ₸)`;
+
+            input.addEventListener('change', (event) => {
+                const id = Number(event.target.dataset.toppingid);
+                if (event.target.checked) {
+                    selectedToppings.add(id);
+                } else {
+                    selectedToppings.delete(id);
+                }
+                updatePopupPrice();
+            });
+            wrap.append(input, label);
+            list.appendChild(wrap);
+        });
+    }
+
+    function updatePopupPrice() {
+        if (!currentPopupItem) {
+            return;
+        }
+        const toppingSum = toppings
+            .filter(t => selectedToppings.has(t.id))
+            .reduce((sum, topping) => { sum += topping.price; }, 0);
+        popupPrice.textContent = `${currentPopupItem.price + toppingSum} ₸`;
     }
 
     closePopup.onclick = () => {

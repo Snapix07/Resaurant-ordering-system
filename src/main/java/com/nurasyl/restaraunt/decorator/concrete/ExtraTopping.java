@@ -17,6 +17,7 @@ public class ExtraTopping extends MenuItemDecorator {
         this.toppingPrice = toppingPrice;
     }
 
+
     @Override
     public String getDescription() {
         return decoratedMenuItem.getDescription() + ", +" + toppingCount + " " + topping;

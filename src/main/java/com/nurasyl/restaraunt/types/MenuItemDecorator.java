@@ -17,7 +17,7 @@ public abstract class MenuItemDecorator implements MenuItem {
 
     @Override
     public String getCategory(){
-        return decoratedMenuItem.getDescription();
+        return decoratedMenuItem.getCategory();
     }
 
     @Override

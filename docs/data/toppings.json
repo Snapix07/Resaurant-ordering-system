@@ -1,0 +1,52 @@
+{
+  "toppings": [
+    {
+      "id": 1,
+      "name": "Extra Cheese",
+      "category": "Pizza",
+      "price": 200
+    },
+    {
+      "id": 2,
+      "name": "Pepperoni",
+      "category": "Pizza",
+      "price": 300
+    },
+    {
+      "id": 3,
+      "name": "Pineapple",
+      "category": "Pizza",
+      "price": 180
+    },
+    {
+      "id": 4,
+      "name": "Bacon",
+      "category": "Burgers",
+      "price": 350
+    },
+    {
+      "id": 5,
+      "name": "Caramelized Onion",
+      "category": "Burgers",
+      "price": 120
+    },
+    {
+      "id": 6,
+      "name": "Extra Patty",
+      "category": "Burgers",
+      "price": 500
+    },
+    {
+      "id": 7,
+      "name": "Feta Cheese",
+      "category": "Salads",
+      "price": 150
+    },
+    {
+      "id": 8,
+      "name": "Whipped Cream",
+      "category": "Desserts",
+      "price": 90
+    }
+  ]
+}

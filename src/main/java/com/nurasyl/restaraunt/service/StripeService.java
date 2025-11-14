@@ -32,7 +32,7 @@ public class StripeService {
             SessionCreateParams.LineItem.PriceData priceData =
                     SessionCreateParams.LineItem.PriceData.builder()
                             .setCurrency("KZT")
-                            .setUnitAmount(product.getAmount() * 100) // без доставки
+                            .setUnitAmount(product.getAmount() * 100)
                             .setProductData(productData)
                             .build();
 
