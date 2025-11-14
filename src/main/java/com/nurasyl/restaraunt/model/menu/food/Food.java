@@ -7,6 +7,7 @@ public class Food {
     private int id;
     private String name;
     private String category;
-    private long price;
+    private int price;
     private String description;
+    private String image;
 }
