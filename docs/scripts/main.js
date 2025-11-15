@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let allMenuItems = [];
     let availableToppings = [];
     let currentItem = null;
-    let selectedToppingsIds = [];
+    let selectedToppingIds = [];
     let cart = [];
 
     // Загружаем меню
@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 throw new Error('Not Found Menu!');
             }
             allMenuItems = await response.json();
+            displayMenu('all')
             updateCart();
         } catch (error) {
             console.error(error);
@@ -39,9 +40,10 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!response.ok) {
                 throw new Error('Not Found Toppings!');
             }
-            availableToppings = response.json();
+            availableToppings = await response.json();
         } catch (error) {
             console.error(error);
+            availableToppings = [];
         }
     }
 
@@ -62,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
         menuContainer.innerHTML = '';
 
         const filteredItems = filterCategory === 'all'
-            ? allMenuitems
+            ? allMenuItems
             : allMenuItems.filter(item => item.category === filterCategory);
 
         filteredItems.forEach((item) => {
@@ -74,12 +76,16 @@ document.addEventListener("DOMContentLoaded", () => {
     function createCard(item) {
         const card = document.createElement('div');
         card.classList.add('card');
-        const priceHtml = item.discountedPrice && item.discountedPrice < item.price
-            ? `<div class="card-price">
-                    <span class="price">${item.price} ₸</span>
-                    <span class="discountedPrice">${item.discountedPrice} ₸</span>
-               </div>`
-            : `<div class="card-price">${item.price}</div>`;
+        let priceHTML = '';
+        if (item.discountedPrice && item.discountedPrice < item.price) {
+            priceHTML = `
+                <div class="card-price">
+                    <span class="original-price">${item.price} ₸</span>
+                    <span class="discounted-price">${item.discountedPrice} ₸</span>
+                </div>`;
+        } else {
+            priceHTML = `<div class="card-price">${item.price} ₸</div>`;
+        }
 
         card.innerHTML = `
             <div class="img-container">
@@ -88,7 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="card-body">
                 <div class="card-title">${item.name}</div>
                 <div class="card-description">${item.description}</div>
-                ${priceHtml}
+                ${priceHTML}
             </div>
         `;
         card.addEventListener('click', () => showPopup(item));
@@ -97,7 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function showPopup(item) {
         currentItem = item;
-        selectedToppingsIds = [];
+        selectedToppingIds = [];
 
         popupImg.src = item.image;
         popupName.textContent = item.name;
@@ -105,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (item.discountedPrice && item.discountedPrice < item.price) {
             popupPrice.innerHTML = `
-                <span class="price">${item.price} ₸</span>
+                <span class="original-price">${item.price} ₸</span>
                 <span class="discountedPrice">${item.discountedPrice} ₸</span>
             `;
         } else {
@@ -152,11 +158,11 @@ document.addEventListener("DOMContentLoaded", () => {
             input.addEventListener('change', (event) => {
                 const toppingId = Number(event.target.dataset.toppingid);
                 if (event.target.checked) {
-                    if (!selectedToppingsIds.includes(toppingId)) {
-                        selectedToppingsIds.push(toppingId);
+                    if (!selectedToppingIds.includes(toppingId)) {
+                        selectedToppingIds.push(toppingId);
                     }
                 } else {
-                    selectedToppingsIds = selectedToppingsIds.filter(id => id !== toppingId);
+                    selectedToppingIds = selectedToppingIds.filter(id => id !== toppingId);
                 }
                 updatePopupPricePreview();
             });
@@ -173,17 +179,17 @@ document.addEventListener("DOMContentLoaded", () => {
         let basePrice = currentItem.discountedPrice || curentItem.price;
         let totalPrice = basePrice;
 
-        selectedToppings.forEach(toppingId => {
+        selectedToppingIds.forEach(toppingId => {
             const topping = availableToppings.find(t => t.id === toppingId);
             if (topping) {
-                totalPrice += toppingPrice;
+                totalPrice += topping.price;
             }
         });
 
         if (currentItem.discountedPrice && currentItem.discountedPrice < currentItem.price) {
             const originalWithToppings = currentItem.price + (totalPrice - basePrice);
             popupPrice.innerHTML = `
-                <span class="price">${originalWithToppings} ₸</span>
+                <span class="original-price">${originalWithToppings} ₸</span>
                 <span class="discountedPrice">${totalPrice} ₸</span>
             `;
         } else {
@@ -197,7 +203,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            if (selectedToppingsIds.length === 0) {
+            if (selectedToppingIds.length === 0) {
                 const cartItem = {
                     foodId: currentItem.id,
                     name: currentItem.name,
@@ -219,10 +225,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            const response = await fetch(`http://localhost:8080/manu/item/${currentItem.id}/customize/${selectedToppingsIds[0]}`, {
+            const response = await fetch(`http://localhost:8080/menu/item/${currentItem.id}/customize/${selectedToppingIds[0]}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(selectedToppingsIds),
+                body: JSON.stringify(selectedToppingIds),
             });
 
             if (!response.ok) {
@@ -238,7 +244,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     price: customizedItem.discountedPrice || customizedItem.price,
                     quantity: 1,
                     image: customizedItem.image,
-                    toppings: customizedItem.topping ? [customizedItem.toppings] : [],
+                    toppings: customizedItem.topping ? [customizedItem.topping] : [],
                 };
 
                 await fetch('http://localhost:8080/cart/add', {

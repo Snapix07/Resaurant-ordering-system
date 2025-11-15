@@ -26,22 +26,25 @@ document.addEventListener("DOMContentLoaded", () => {
         cart.forEach((item, index) => {
             total += item.price * (item.quantity || 1);
 
-            const itemName = product ? product.name : "Unnamed Product";
-            const itemImage = product ? product.image : "placeholder.png";
-
-            const toppingsInfo = item.toppings && item.toppings.length > 0
-                ? `<p style="font-size: 12px; color: #666;">+ ${item.toppings.map(t => t.name).join(', ')}</p>`
-                : '';
+            const itemName = item.name || "Unnamed Product";
+            const itemImage = item.image || "placeholder.png";
+            let toppingsHTML = '';
+            if (item.toppings && item.toppings.length > 0) {
+                const toppingsNames = item.toppings.map(t => t.name).join(', ');
+                toppingsHTML = `<p class="cart-item-toppings">+ ${toppingsNames}</p>`;
+            }
             const cartItem = document.createElement("div");
             cartItem.classList.add("cart-item");
+
+            const quantityText = item.quantity > 1 ? ` * ${item.quantity}` : '';
             cartItem.innerHTML = `
             <img src="${itemImage}" alt="${itemName}">
             <div class="cart-item-details">
                 <h3>${itemName}</h3>
-                ${toppingsInfo}
-                <p style="font-weight: bold;">${item.price} ₸ ${item.quantity > 1 ? `x ${item.quantity}` : ''}</p>
+                ${toppingsHTML}
+                <p class="cart-item-price">${item.price} ₸ ${quantityText}</p>
             </div>
-            <button data-index="${index}">Remove</button>
+            <button class="remove-btn" data-index="${index}">Remove</button>
         `;
 
             cartItem.querySelector("button").addEventListener("click", async () => {

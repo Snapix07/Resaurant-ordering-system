@@ -29,8 +29,14 @@ public class MenuController {
         return menuService.getMenuItemsByCategory(category);
     }
 
+    @GetMapping("/toppings/{category}")
+    public List<Map<String, Object>> getToppingsByCategory(@PathVariable("category") String category) throws IOException {
+        return menuService.getToppingsByCategory(category);
+    }
+
     @PostMapping("/item/{id}/customize/{toppingId}")
     public List<Map<String, Object>> getCustomizedMenuItems(@PathVariable("id") int id,
+                                                            @PathVariable("toppingId") int toppingId,
                                                             @RequestBody List<Integer> toppingIds) throws IOException {
         return menuService.getCustomizedMenuItems(id, toppingIds);
     }
