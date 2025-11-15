@@ -11,34 +11,46 @@ document.addEventListener("DOMContentLoaded", () => {
     const toaster = document.getElementById('toaster');
     const cartCount = document.getElementById('cart-count');
 
-    let foods = [];
-    let combos = [];
-    let toppings = [];
+
+    let allMenuItems = [];
+    let availableToppings = [];
+    let currentItem = null;
+    let selectedToppingsIds = [];
     let cart = [];
 
     // Загружаем меню
-    Promise.all([
-        fetch('data/food.json').then(res => res.json()),
-        fetch('data/combos.json').then(res => res.json())
-    ])
-        .then(([foodData, comboData]) => {
-            foods = foodData.food || [];
-            combos = comboData.combos || [];
-            displayMenu('all');
+    async function loadMenu() {
+        try {
+            const response = await fetch('http://localhost:8080/menu');
+            if (!response.ok) {
+                throw new Error('Not Found Menu!');
+            }
+            allMenuItems = await response.json();
             updateCart();
-        })
-        .catch(err => console.log(err));
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     // Загружаем топпинги
-    fetch('data/toppings.json')
-        .then(res => res.json())
-        .then(data => { toppings = data.toppings || []; })
-        .catch(err => console.log(err));
+    async function loadToppingsForCategory(category) {
+        try {
+            const response = await fetch(`http://localhost:8080/menu/toppings/${category}`);
+            if (!response.ok) {
+                throw new Error('Not Found Toppings!');
+            }
+            availableToppings = response.json();
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     async function updateCart() {
         try {
             const res = await fetch('http://localhost:8080/cart');
-            if (!res.ok) throw new Error('Failed to fetch cart');
+            if (!res.ok) {
+                throw new Error('Failed to fetch cart');
+            }
             cart = await res.json();
             updateCartCount();
         } catch (error) {
@@ -49,12 +61,11 @@ document.addEventListener("DOMContentLoaded", () => {
     function displayMenu(filterCategory = 'all') {
         menuContainer.innerHTML = '';
 
-        const filteredFoods = filterCategory === 'all' ? foods
-            : foods.filter(f => f.category === filterCategory);
-        const filteredCombos = filterCategory === 'all' ? combos
-            : combos.filter(c => c.category === filterCategory);
+        const filteredItems = filterCategory === 'all'
+            ? allMenuitems
+            : allMenuItems.filter(item => item.category === filterCategory);
 
-        [...filteredFoods, ...filteredCombos].forEach(item => {
+        filteredItems.forEach((item) => {
             const card = createCard(item);
             menuContainer.appendChild(card);
         });
@@ -63,6 +74,13 @@ document.addEventListener("DOMContentLoaded", () => {
     function createCard(item) {
         const card = document.createElement('div');
         card.classList.add('card');
+        const priceHtml = item.discountedPrice && item.discountedPrice < item.price
+            ? `<div class="card-price">
+                    <span class="price">${item.price} ₸</span>
+                    <span class="discountedPrice">${item.discountedPrice} ₸</span>
+               </div>`
+            : `<div class="card-price">${item.price}</div>`;
+
         card.innerHTML = `
             <div class="img-container">
                 <img src="${item.image}" alt="${item.name}">
@@ -70,71 +88,53 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="card-body">
                 <div class="card-title">${item.name}</div>
                 <div class="card-description">${item.description}</div>
-                <div class="card-price">${item.price} ₸</div>
+                ${priceHtml}
             </div>
         `;
         card.addEventListener('click', () => showPopup(item));
         return card;
     }
 
-    function showPopup(item) {
-        currentPopupItem = item;
-        selectedToppings = new Set();
+    async function showPopup(item) {
+        currentItem = item;
+        selectedToppingsIds = [];
+
         popupImg.src = item.image;
         popupName.textContent = item.name;
         popupDescription.textContent = item.description;
-        popupPrice.textContent = `${item.price} ₸`;
 
-        toppingsForCategory(item.category || '');
+        if (item.discountedPrice && item.discountedPrice < item.price) {
+            popupPrice.innerHTML = `
+                <span class="price">${item.price} ₸</span>
+                <span class="discountedPrice">${item.discountedPrice} ₸</span>
+            `;
+        } else {
+            popupPrice.textContent = `${item.price} ₸`;
+        }
+
+        await loadToppingsForCategory(item.category);
+        displayToppings();
 
         popup.style.display = 'flex';
 
         addToCartBtn.onclick = async () => {
-            const chosenToppings = toppings.filter(t => selectedToppings.has(t.id));
-            const totalPrice = item.price + chosenToppings.reduce((sum, t) => sum + t.price, 0);
-
-            const payload = {
-                foodId: item.id || Date.now(),
-                name: item.name,
-                price: totalPrice,
-                quantity: 1,
-                image: item.image,
-                toppings: chosenToppings.map(t => ({ id: t.id, name: t.name, price: t.price }))
-            };
-            try {
-                const response = await fetch('http://localhost:8080/cart/add', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (response.ok) {
-                    showToaster(`${item.name} added to cart`);
-                    await updateCart();
-                } else {
-                    showToaster('Failed to add item to cart');
-                }
-            } catch (error) {
-                console.error(error);
-            }
+            await addItemToCart();
             popup.style.display = 'none';
         };
     }
 
-    let selectedToppings = new Set();
-    let currentPopupItem = null;
 
-    function toppingsForCategory(category) {
+
+    function displayToppings() {
         const list = document.getElementById('toppings-list');
         list.innerHTML = '';
 
-        const available = toppings.filter(t => t.category === category);
-        if (available.length === 0) {
-            list.textContent = 'No Toppings';
+        if (!availableToppings || availableToppings.length === 0) {
+            list.textContent = 'No Toppings Available';
             return;
         }
 
-        available.forEach(topping => {
+        availableToppings.forEach(topping => {
             const wrap = document.createElement('div');
             wrap.className = 'topping';
 
@@ -142,40 +142,123 @@ document.addEventListener("DOMContentLoaded", () => {
             input.type = 'checkbox';
             input.id = 'topping-' + topping.id;
             input.dataset.toppingid = topping.id;
+            input.dataset.toppingprice = topping.price;
 
-            input.checked = selectedToppings.has(topping.id);
 
             const label = document.createElement('label');
             label.htmlFor = input.id;
-            label.textContent = `${topping.name} (${topping.price} ₸)`;
+            label.textContent = `${topping.name} (+${topping.price} ₸)`;
 
             input.addEventListener('change', (event) => {
-                const id = Number(event.target.dataset.toppingid);
+                const toppingId = Number(event.target.dataset.toppingid);
                 if (event.target.checked) {
-                    selectedToppings.add(id);
+                    if (!selectedToppingsIds.includes(toppingId)) {
+                        selectedToppingsIds.push(toppingId);
+                    }
                 } else {
-                    selectedToppings.delete(id);
+                    selectedToppingsIds = selectedToppingsIds.filter(id => id !== toppingId);
                 }
-                updatePopupPrice();
+                updatePopupPricePreview();
             });
             wrap.append(input, label);
             list.appendChild(wrap);
         });
     }
 
-    function updatePopupPrice() {
-        if (!currentPopupItem) {
+    function updatePopupPricePreview() {
+        if (!currentItem) {
             return;
         }
-        const toppingSum = toppings
-            .filter(t => selectedToppings.has(t.id))
-            .reduce((sum, topping) => { sum += topping.price; }, 0);
-        popupPrice.textContent = `${currentPopupItem.price + toppingSum} ₸`;
+
+        let basePrice = currentItem.discountedPrice || curentItem.price;
+        let totalPrice = basePrice;
+
+        selectedToppings.forEach(toppingId => {
+            const topping = availableToppings.find(t => t.id === toppingId);
+            if (topping) {
+                totalPrice += toppingPrice;
+            }
+        });
+
+        if (currentItem.discountedPrice && currentItem.discountedPrice < currentItem.price) {
+            const originalWithToppings = currentItem.price + (totalPrice - basePrice);
+            popupPrice.innerHTML = `
+                <span class="price">${originalWithToppings} ₸</span>
+                <span class="discountedPrice">${totalPrice} ₸</span>
+            `;
+        } else {
+            popupPrice.textContent = `${totalPrice} ₸`;
+        }
+    }
+
+    async function addItemToCart() {
+        if (!currentItem) {
+            return;
+        }
+
+        try {
+            if (selectedToppingsIds.length === 0) {
+                const cartItem = {
+                    foodId: currentItem.id,
+                    name: currentItem.name,
+                    price: currentItem.discountedPrice || currentItem.price,
+                    quantity: 1,
+                    image: currentItem.image,
+                    toppings: []
+                };
+
+                const response = await fetch('http://localhost:8080/cart/add', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(cartItem),
+                });
+                if (response.ok) {
+                    showToaster(`${currentItem.name} added successfully.`);
+                    await updateCart();
+                }
+                return;
+            }
+
+            const response = await fetch(`http://localhost:8080/manu/item/${currentItem.id}/customize/${selectedToppingsIds[0]}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(selectedToppingsIds),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to to customize item.');
+            }
+
+            const customizedItems = await response.json();
+
+            for (const customizedItem of customizedItems) {
+                const cartItem = {
+                    foodId: customizedItem.id,
+                    name: customizedItem.name,
+                    price: customizedItem.discountedPrice || customizedItem.price,
+                    quantity: 1,
+                    image: customizedItem.image,
+                    toppings: customizedItem.topping ? [customizedItem.toppings] : [],
+                };
+
+                await fetch('http://localhost:8080/cart/add', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(cartItem)
+                });
+            }
+
+            showToaster(`${currentItem.name} with ${customizedItems.length} topping(s) added successfully.`);
+            await updateCart();
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     closePopup.onclick = () => {
         popup.style.display = 'none';
-    };
+    }
+
 
     function showToaster(message) {
         toaster.textContent = message;
@@ -195,5 +278,5 @@ document.addEventListener("DOMContentLoaded", () => {
         cartCount.innerText = totalItems;
     }
 
-    updateCartCount();
+    loadMenu();
 });

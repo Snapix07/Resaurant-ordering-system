@@ -6,17 +6,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const toaster = document.getElementById("toaster");
 
     let cart = [];
-    let foods = [];
-    let combos = [];
-
-    Promise.all([
-        fetch('data/food.json').then(res => res.json()),
-        fetch('data/combos.json').then(res => res.json())
-    ]).then(([foodData, comboData]) => {
-        foods = foodData.food || [];
-        combos = comboData.combos || [];
-        fetchCart();
-    });
 
 
     async function fetchCart() {
@@ -37,19 +26,20 @@ document.addEventListener("DOMContentLoaded", () => {
         cart.forEach((item, index) => {
             total += item.price * (item.quantity || 1);
 
-
-            let product = foods.find(f => f.id === item.foodId) || combos.find(c => c.id === item.foodId);
-
             const itemName = product ? product.name : "Unnamed Product";
             const itemImage = product ? product.image : "placeholder.png";
 
+            const toppingsInfo = item.toppings && item.toppings.length > 0
+                ? `<p style="font-size: 12px; color: #666;">+ ${item.toppings.map(t => t.name).join(', ')}</p>`
+                : '';
             const cartItem = document.createElement("div");
             cartItem.classList.add("cart-item");
             cartItem.innerHTML = `
             <img src="${itemImage}" alt="${itemName}">
             <div class="cart-item-details">
                 <h3>${itemName}</h3>
-                <p>${item.price} ₸</p>
+                ${toppingsInfo}
+                <p style="font-weight: bold;">${item.price} ₸ ${item.quantity > 1 ? `x ${item.quantity}` : ''}</p>
             </div>
             <button data-index="${index}">Remove</button>
         `;
