@@ -18,7 +18,6 @@ document.addEventListener("DOMContentLoaded", () => {
     let selectedToppingIds = [];
     let cart = [];
 
-    // Загружаем меню
     async function loadMenu() {
         try {
             const response = await fetch('http://localhost:8080/menu');
@@ -33,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Загружаем топпинги
+
     async function loadToppingsForCategory(category) {
         try {
             const response = await fetch(`http://localhost:8080/menu/toppings/${category}`);

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Order</title>
+
+    <style>
+        body {
+            margin: 0;
+            background: #f5f5f5;
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .card {
+            background: white;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            width: 420px;
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 26px;
+            text-align: center;
+        }
+
+        .order-id {
+            font-size: 32px;
+            text-align: center;
+            margin: 10px 0 25px 0;
+            font-weight: bold;
+            color: #333;
+        }
+
+        p {
+            font-size: 18px;
+            margin: 8px 0;
+        }
+
+        .highlight {
+            background: #ffebcc;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>Your order has been received</h1>
+
+    <div id="info">Loading...</div>
+</div>
+
+<script>
+    async function loadOrder() {
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get("id");
+
+        if (!id) {
+            document.getElementById("info").innerHTML = "Order ID not found";
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8080/orders/${id}`);
+            if (!response.ok) {
+                document.getElementById("info").innerHTML = "Order not found";
+                return;
+            }
+
+            const order = await response.json();
+
+            document.getElementById("info").innerHTML = `
+                <div class="order-id">#${order.id}</div>
+                <p>Status: <strong>${order.status}</strong></p>
+                <p>Total amount: <strong>${order.total} ₸</strong></p>
+
+                <div class="highlight">
+                    Please save your order number: <br> <span style="font-size:26px;">#${order.id}</span>
+                </div>
+            `;
+        } catch (error) {
+            document.getElementById("info").innerHTML = "Error loading order";
+        }
+    }
+
+    loadOrder();
+</script>
+
+</body>
+</html>

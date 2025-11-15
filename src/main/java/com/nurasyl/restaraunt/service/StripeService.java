@@ -16,7 +16,7 @@ public class StripeService {
     @Value("${stripe.secretKey}")
     private String apiKey;
 
-    public StripeResponse checkoutProducts(List<ProductRequest> products, long strategyPrice) {
+    public StripeResponse checkoutProducts(List<ProductRequest> products, long strategyPrice,int orderId) {
         Stripe.apiKey = apiKey;
         List<SessionCreateParams.LineItem> lineItems = new ArrayList<>();
 
@@ -46,7 +46,7 @@ public class StripeService {
         }
 
 
-        if (strategyPrice > 0) {
+        if (strategyPrice > 199) {
             SessionCreateParams.LineItem.PriceData.ProductData deliveryData =
                     SessionCreateParams.LineItem.PriceData.ProductData.builder()
                             .setName("Delivery")
@@ -71,7 +71,7 @@ public class StripeService {
 
         SessionCreateParams params = SessionCreateParams.builder()
                 .setMode(SessionCreateParams.Mode.PAYMENT)
-                .setSuccessUrl("http://localhost:8080/success")
+                .setSuccessUrl("http://localhost:63342/restaurant/docs/order.html?id=" + orderId)
                 .setCancelUrl("http://localhost:8080/cancel")
                 .addAllLineItem(lineItems)
                 .setShippingAddressCollection(

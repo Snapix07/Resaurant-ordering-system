@@ -19,7 +19,11 @@ public class CartService {
     @Setter
     private DeliveryStrategy deliveryStrategy;
 
+    private long nextId = 1;
     public void addItem(CartItem item) {
+        if (item.getFoodId() == null) {
+            item.setFoodId(nextId++);
+        }
         for (CartItem i : items) {
             if (i.getFoodId() != null && i.getFoodId().equals(item.getFoodId())) {
                 if(toppingsMatch(i.getToppings(), item.getToppings())) {

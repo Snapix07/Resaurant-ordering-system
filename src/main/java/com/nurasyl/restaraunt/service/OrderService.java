@@ -34,7 +34,7 @@ public class OrderService {
     }
 
     public Order createOrder(List<CartItem> items, DeliveryStrategy strategy) {
-        long orderId = orderCounter.getAndIncrement();
+        int orderId = (int) orderCounter.getAndIncrement();
         long total = items.stream().mapToLong(i -> (long) (i.getQuantity() * i.getPrice())).sum();
         if (strategy != null) {
             total += strategy.calculateDeliveryFee();

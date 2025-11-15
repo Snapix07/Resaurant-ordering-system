@@ -48,7 +48,7 @@ public class OrderController {
         Order order = orderService.createOrder(items, strategy);
 
         long strategyPrice = strategy.calculateDeliveryFee();
-        StripeResponse response = stripeService.checkoutProducts(products, strategyPrice);
+        StripeResponse response = stripeService.checkoutProducts(products, strategyPrice, order.getId());
 
 
         cartService.clear();

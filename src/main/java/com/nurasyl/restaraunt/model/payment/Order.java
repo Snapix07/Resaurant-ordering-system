@@ -8,7 +8,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class Order {
-    private long id;
+    private int id;
     private List<CartItem> items;
     private long total;
     private String status;

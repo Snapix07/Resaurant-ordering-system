@@ -9,6 +9,6 @@ public class OrderLogger implements OrderObserver {
 
     @Override
     public void onOrderCreated(Order order) {
-        System.out.println("Новый заказ создан: " + order.getId() + ", сумма: " + order.getTotal());
+        System.out.println("New order created: " + order.getId() + ", total: " + order.getTotal());
     }
 }
