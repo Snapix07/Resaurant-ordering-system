@@ -5,6 +5,48 @@ body {
     padding: 20px;
 }
 
+header {
+    top: 0;
+    padding: 15px 25px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    justify-items: center;
+    align-items: center;
+    z-index: 10000;
+}
+
+header .title {
+    margin: 0;
+    font-size: 3rem;
+    font-weight: bold;
+    grid-column: 2;
+    text-align: center;
+    color: #03045E;
+}
+
+#home-button {
+    grid-column: 3;
+    padding: 10px 18px;
+    background-color: #00B4D8;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+    font-weight: bold;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+}
+
+#home-button:hover {
+    background-color: #0096c7;
+    transform: translateY(-2px);
+}
+
+#home-button:active {
+    transform: scale(0.97);
+}
+
 .title {
     text-align: center;
     color: #03045E;
@@ -16,7 +58,7 @@ body {
     flex-direction: column;
     gap: 10px;
     max-width: 600px;
-    margin: 0 auto;
+    margin: 10px auto;
 }
 
 .cart-item {
@@ -78,8 +120,7 @@ body {
 .toaster {
     position: fixed;
     bottom: 20px;
-    right: 30px;
-    min-width: 200px;
+    left: 45%;
     background-color: #323232;
     color: white;
     padding: 12px 20px;
@@ -94,4 +135,49 @@ body {
 .toaster.show {
     opacity: 1;
     transform: translateY(0);
+}
+
+.cart-item-toppings {
+    font-size: 12px;
+    color: #676767;
+    font-style: italic;
+    margin: 3px 0 !important;
+}
+
+.cart-item-price {
+    font-weight: bold;
+    color: black !important;
+    font-size: 14px !important;
+}
+
+#delivery-type {
+    padding: 8px 14px;
+    font-size: 15px;
+    border-radius: 6px;
+    border: 1px solid #90E0EF;
+    background-color: white;
+    color: #03045E;
+    cursor: pointer;
+    outline: none;
+    transition: 0.2s;
+}
+
+#delivery-type:hover {
+    border-color: #00B4D8;
+}
+
+#delivery-type:focus {
+    border-color: #0096C7;
+    box-shadow: 0 0 4px rgba(0,150,199,0.3);
+}
+
+.delivery-container {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.delivery-container label {
+    font-weight: bold;
+    color: #03045E;
+    margin-right: 10px;
 }

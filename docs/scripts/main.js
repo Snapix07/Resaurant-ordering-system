@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (item.discountedPrice && item.discountedPrice < item.price) {
             popupPrice.innerHTML = `
                 <span class="original-price">${item.price} ₸</span>
-                <span class="discountedPrice">${item.discountedPrice} ₸</span>
+                <span class="discounted-price">${item.discountedPrice} ₸</span>
             `;
         } else {
             popupPrice.textContent = `${item.price} ₸`;
@@ -176,7 +176,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        let basePrice = currentItem.discountedPrice || curentItem.price;
+        let basePrice = currentItem.discountedPrice || currentItem.price;
         let totalPrice = basePrice;
 
         selectedToppingIds.forEach(toppingId => {
@@ -190,7 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const originalWithToppings = currentItem.price + (totalPrice - basePrice);
             popupPrice.innerHTML = `
                 <span class="original-price">${originalWithToppings} ₸</span>
-                <span class="discountedPrice">${totalPrice} ₸</span>
+                <span class="discounted-price">${totalPrice} ₸</span>
             `;
         } else {
             popupPrice.textContent = `${totalPrice} ₸`;
@@ -236,25 +236,33 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             const customizedItems = await response.json();
+            const allToppings = [];
+            let totalPrice = currentItem.discountedPrice || currentItem.price;
 
             for (const customizedItem of customizedItems) {
-                const cartItem = {
-                    foodId: customizedItem.id,
-                    name: customizedItem.name,
-                    price: customizedItem.discountedPrice || customizedItem.price,
-                    quantity: 1,
-                    image: customizedItem.image,
-                    toppings: customizedItem.topping ? [customizedItem.topping] : [],
-                };
-
-                await fetch('http://localhost:8080/cart/add', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(cartItem)
-                });
+                if (customizedItem.topping) {
+                    allToppings.push(customizedItem.topping);
+                    totalPrice += customizedItem.topping.price;
+                }
             }
 
-            showToaster(`${currentItem.name} with ${customizedItems.length} topping(s) added successfully.`);
+            const cartItem = {
+                foodId: currentItem.id,
+                name: currentItem.name,
+                price: totalPrice,
+                quantity: 1,
+                image: currentItem.image,
+                toppings: allToppings,
+            };
+
+            await fetch('http://localhost:8080/cart/add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(cartItem)
+            });
+
+            const toppingNames = allToppings.map(t => t.name).join(', ');
+            showToaster(`${currentItem.name} with ${toppingNames} topping(s) added successfully.`);
             await updateCart();
         } catch (error) {
             console.log(error);

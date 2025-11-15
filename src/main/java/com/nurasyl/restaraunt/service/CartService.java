@@ -1,5 +1,6 @@
 package com.nurasyl.restaraunt.service;
 
+import com.nurasyl.restaraunt.model.menu.food.Topping;
 import com.nurasyl.restaraunt.model.payment.cart.CartItem;
 import com.nurasyl.restaraunt.types.DeliveryStrategy;
 import lombok.Getter;
@@ -7,7 +8,9 @@ import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class CartService {
@@ -19,8 +22,10 @@ public class CartService {
     public void addItem(CartItem item) {
         for (CartItem i : items) {
             if (i.getFoodId() != null && i.getFoodId().equals(item.getFoodId())) {
-                i.setQuantity(i.getQuantity() + item.getQuantity());
-                return;
+                if(toppingsMatch(i.getToppings(), item.getToppings())) {
+                    i.setQuantity(i.getQuantity() + item.getQuantity());
+                    return;
+                }
             }
         }
         items.add(item);
@@ -29,8 +34,10 @@ public class CartService {
     public void removeItem(CartItem item) {
         items.removeIf(i -> {
             if (i.getFoodId() != null && i.getFoodId().equals(item.getFoodId())) {
-                i.setQuantity(i.getQuantity() - item.getQuantity());
-                return i.getQuantity() <= 0;
+                if(toppingsMatch(i.getToppings(), item.getToppings())) {
+                    i.setQuantity(i.getQuantity() - item.getQuantity());
+                    return i.getQuantity() <= 0;
+                }
             }
             return false;
         });
@@ -49,5 +56,33 @@ public class CartService {
             sum += deliveryStrategy.calculateDeliveryFee();
         }
         return sum;
+    }
+
+    private boolean toppingsMatch(List<Topping> toppings1, List<Topping> toppings2) {
+        if ((toppings1 == null || toppings1.isEmpty()) &&
+                (toppings2 == null || toppings2.isEmpty())) {
+            return true;
+        }
+
+        if ((toppings1 == null || toppings1.isEmpty()) ||
+                (toppings2 == null || toppings2.isEmpty())) {
+            return false;
+        }
+        if (toppings1.size() != toppings2.size()) {
+            return false;
+        }
+
+        Set<Integer> ids1 = new HashSet<>();
+        Set<Integer> ids2 = new HashSet<>();
+
+        for (Topping t : toppings1) {
+            ids1.add(t.getId());
+        }
+
+        for (Topping t : toppings2) {
+            ids2.add(t.getId());
+        }
+
+        return ids1.equals(ids2);
     }
 }
